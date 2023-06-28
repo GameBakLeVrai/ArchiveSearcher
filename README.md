@@ -35,7 +35,7 @@ pip install -r requirements.txt
 Clone the project and enjoy.
 
 ```sh
-git clone https://github.com/GameBakLeVrai/AutoIPTables.git
+git clone https://github.com/GameBakLeVrai/ArchiveSearcher.git
 ```
 
 > Don't forget to configure the PATH of your UnRAR.exe in the config.json file for the winrar archive extraction file.
