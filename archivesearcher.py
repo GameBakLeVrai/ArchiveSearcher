@@ -47,7 +47,10 @@ def checkExt(ext, file):
 	if (menuList[ModuleChoice-1] == "Search and extract files from all archives in folder"):
 		for i in f.namelist():
 			if QuestionFileSort in i.split("/")[0]:
-				f.extract(i, "./Results/" + QuestionSortie)
+				try:
+					f.extract(i, "./Results/" + QuestionSortie)
+				except:
+					print(f"Error Extracting path : {i}")
 
 	if (menuList[ModuleChoice-1] == "Search file in one archive" or menuList[ModuleChoice-1] == "Search file in all archives of folder"):
 		retrieved_elements = list(filter(lambda x: QuestionSearch in x, f.namelist()))
