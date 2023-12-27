@@ -17,6 +17,10 @@ with open('config.json', 'r') as file:
 	config = json.load(file)
 	rarfile.UNRAR_TOOL = config["UNRAR_PATH"]
 
+with open('password.txt', 'r') as file:
+	password = file.readlines()[0]
+	print("Password Loaded :", password)
+
 #################################################################################################################################################
 
 Banner = Fore.MAGENTA + """
@@ -39,18 +43,27 @@ ModuleChoice = 0
 def checkExt(ext, file):
 	print("\n" + Fore.RESET + file)
 
-	if "rar" in ext:
-		f = rarfile.RarFile(file)
-	if "zip" in ext:
-		f = zipfile.ZipFile(file, 'r')
+	try:
+		if "rar" in ext.lower() or "7z" in ext.lower():
+			f = rarfile.RarFile(file)
+			f.setpassword(pwd=password)
+		if "zip" in ext.lower():
+			f = zipfile.ZipFile(file, 'r')
+	except RuntimeError as e:
+		os.replace(file, f"Error/{file}")
+		print('Error', str(e))
 
 	if (menuList[ModuleChoice-1] == "Search and extract files from all archives in folder"):
 		for i in f.namelist():
-			if QuestionFileSort in i.split("/")[0]:
+			if QuestionFileSort.lower() in i.lower():
 				try:
 					f.extract(i, "./Results/" + QuestionSortie)
-				except:
-					print(f"Error Extracting path : {i}")
+				except zipfile.LargeZipFile as e:
+					if "File is encrypted" in str(e):
+						f.setpassword(pwd=password)
+						f.extract(i, "./Results/" + QuestionSortie)
+				except Exception as e:
+					print(f"Error Extracting path : {i} {str(e)}")
 
 	if (menuList[ModuleChoice-1] == "Search file in one archive" or menuList[ModuleChoice-1] == "Search file in all archives of folder"):
 		retrieved_elements = list(filter(lambda x: QuestionSearch in x, f.namelist()))
@@ -98,7 +111,11 @@ def ModuleExec(file, ext):
 		for l in listRarfiles:
 			if(os.path.isfile(file + "\\" + l)):
 				file_name, file_extension = os.path.splitext(file + "\\" + l)
-				checkExt(file_extension, file + "\\" + l)
+
+				try:
+					checkExt(file_extension, file + "\\" + l)
+				except Exception as e:
+					print(f"Error opening archive : {str(e)}")				
 
 	elif (menuList[ModuleChoice-1] == "Search and extract files from all archives in folder"):
 		createFolder("./Results/" + QuestionSortie)
@@ -107,12 +124,20 @@ def ModuleExec(file, ext):
 		for l in listRarfiles:
 			if(os.path.isfile(file + "\\" + l)):
 				file_name, file_extension = os.path.splitext(file + "\\" + l)
-				checkExt(file_extension, file + "\\" + l)
+				
+				try:
+					checkExt(file_extension, file + "\\" + l)
+				except Exception as e:
+					print(f"Error opening archive : {str(e)}")
 	else:
-		checkExt(ext, file)
+		try:
+			checkExt(ext, file)
+		except Exception as e:
+			print(f"Error opening archive : {str(e)}")
 
 #################################################################################################################################################
 
+createFolder("./Error")
 Reset()
 
 while (True):
