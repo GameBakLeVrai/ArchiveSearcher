@@ -12,6 +12,10 @@ ArchiveSearcher is an archive manipulation tool which, without having to constan
 
 > Many new features will be added in the future.
 
+## Extraction of archive with password
+
+You can set password of your archives directly into password.txt file
+
 ## Installation
 
 ArchiveSearcher requires [Python](https://www.python.org/downloads/) to run.
@@ -33,9 +37,9 @@ pip install -r requirements.txt
 ```
 
 Clone the project and enjoy.
-
+https://github.com/GameBakLeVrai/ArchiveSearcher.git
 ```sh
-git clone https://github.com/GameBakLeVrai/ArchiveSearcher.git
+git clone https://github.com/GameBakLeVrai/AutoIPTables.git
 ```
 
 > Don't forget to configure the PATH of your UnRAR.exe in the config.json file for the winrar archive extraction file.
